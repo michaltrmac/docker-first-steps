@@ -16,5 +16,10 @@ services:
       - "9300:9300"
       - "9200:9200"
 
+  elasticsearch-hq:
+    image: elastichq/elasticsearch-hq
+    ports:
+      - "80:80"
+
 volumes:
   esdata:
