@@ -1,0 +1,22 @@
+FROM docker.local/python-simple-app:1.0
+
+# nastaveni verze uwsgi balicku
+ENV VERSION_UWSGI=2.0.17-r0
+
+# instalace uwsgi
+RUN apk add --no-cache \
+        uwsgi=$VERSION_UWSGI \
+        uwsgi-fastrouter=$VERSION_UWSGI \
+        uwsgi-http=$VERSION_UWSGI \
+        uwsgi-python3=$VERSION_UWSGI
+
+# pridame zdrojovy kod aplikace
+ADD src /usr/src/app
+
+# pridame konfiguracni soubor pro uwsgi
+ADD conf/uwsgi.ini /
+
+# dinstalujeme potrebne knihovny z requirements.txt
+RUN cd /usr/src/app && pip install -r requirements.txt
+
+CMD ["uwsgi", "--subscribe-to",  "nginx:flask-app", "--ini", "/uwsgi.ini"]
