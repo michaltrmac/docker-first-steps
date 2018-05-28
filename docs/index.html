@@ -1,6 +1,163 @@
+<!doctype html>
 <html>
-  <head></head>
-  <body>
-    <b>test</b>
-  </body>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Docker - first steps</title>
+
+    <link rel="stylesheet" href="css/reveal.css" />
+    <!--<link rel="stylesheet" href="css/theme/black.css">-->
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="css/zenburn.css" />
+
+    <!-- Docker theme -->
+    <link rel="stylesheet" href="css/theme/simple.css" />
+    <link rel="stylesheet" href="css/theme/docker.css" />
+</head>
+<body>
+<div class="reveal">
+    <div class="slides">
+        <header></header>
+
+        <!-- slide 1 -->
+        <section data-state="slide1">
+            <style>.slide1 header:after { content: "Docker"; }</style>
+            <div>
+                <img src="img/docker.png" style="width: 432px; height: 376px; max-height: none; max-width: none;"/>
+                <br/>
+            </div>
+        </section>
+
+        <!-- slide 2 - Overview -->
+        <section data-state="slide2">
+            <style>.slide2 header:after { content: "Co je to Docker?"; }</style>
+            <p>
+                Nástroj navržený pro snažší vytváření, publikování a spouštění aplikací prostřednictvím SW kontejnerů.
+            </p>
+            <br />
+            <p>
+                Kontejnery umožňují vývojářům zabalit aplikaci se všemi závislostmi do jednoho balíčku. Tímto je
+                zajištěno, že aplikace bude fungovat stejně na PC vývojáře i na produkčních serverech.
+            </p>
+        </section>
+
+        <!-- slide 3 - Docker vs VMs -->
+        <section data-state="slide3">
+            <section>
+                <style>.slide3 header:after { content: "Rozdíly oproti ostatním virtualizačním SW"; }</style>
+                <p>
+                    <img src="img/containers-vs-vms.png" />
+                </p>
+            </section>
+            <section>
+                <div style="position: absolute; left: 1%; top: 100px; width: 48%;" class="absolute-element">
+                    <h4 class="al-left">Kontejnery</h4><br />
+                    <ul>
+                        <li>sdílené HW prostředky</li>
+                        <li>není nutné instalovat OS</li>
+                        <li>rychlejší spuštění nové instance</li>
+                        <li>využití pro microservices</li>
+                    </ul>
+                </div>
+                <div style="position: absolute; left: 52%; top: 100px; width: 48%;" class="absolute-element">
+                    <h4 class="al-left">VMs</h4><br />
+                    <ul>
+                        <li>od začátku alokované HW prostředky</li>
+                        <li>vždy kompletní OS + Applikace</li>
+                        <li>pomalejší spouštění nových instancí</li>
+                        <li>větší izolace</li>
+                    </ul>
+                </div>
+            </section>
+        </section>
+
+        <!-- slide 4 - Images Overview, create, build, run -->
+        <section data-state="slide4">
+            <section>
+                <style>.slide4 header:after { content: "Image"; }</style>
+                <p>
+                    Jedná se o základ pro docker kontejner.
+                </p>
+                <ul>
+                    <li class="fragment">read-only šablony, ze kterých jsou spuštěny jednotlivé kontejnery</li>
+                    <li class="fragment">každý image se skládá z několika vrstev - cache</li>
+                    <li class="fragment">každou modifikací image vzniká nová vrstva</li>
+                </ul>
+
+                <br /><br /><br />
+                <h4 class="al-left fragment">Jak získat image</h4>
+                <ul>
+                    <li class="fragment"><a href="http://hub.docker.com">http://hub.docker.com</a></li>
+                    <li class="fragment">Dockerfile</li>
+                    <li class="fragment">Interaktivně ze spuštěného kontejneru (docker commit)</li>
+                </ul>
+            </section>
+
+            <section data-state="slide4-1">
+                <style>.slide4-1 header:after { content: "Dockerfile"; }</style>
+
+                <pre>
+                    <code data-trim data-noescape>
+                        FROM python:3.6.5-alpine3.7
+
+                        # pridame zdrojovy kod aplikace
+                        ADD src /usr/src/app
+
+                        # doinstalujeme potrebne knihovny z requirements.txt
+                        RUN cd /usr/src/app && pip install -r requirements.txt
+
+                        ENV PYTHONPATH=/usr/src/app
+
+                        WORKDIR /usr/src/app
+
+                        CMD ["python", "run.py"]
+                    </code>
+                </pre>
+            </section>
+
+            <section data-state="slide4-2">
+                <style>.slide4-2 header:after { content: "Dockerfile - Build & Run"; }</style>
+
+                <pre>
+                    <code data-trim data-noescape>
+                        docker build -t python-simple-app:1.0 .
+                    </code>
+                </pre>
+            </section>
+        </section>
+
+        <!--
+        <section>Single Horizontal Slide</section>
+        <section>
+            <section>Vertical Slide 1</section>
+            <section>Vertical Slide 2</section>
+        </section>
+        -->
+    </div>
+</div>
+
+<script src="js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+
+<script>
+    // More info about config & dependencies:
+    // - https://github.com/hakimel/reveal.js#configuration
+    // - https://github.com/hakimel/reveal.js#dependencies
+    Reveal.initialize({
+        dependencies: [
+            // { src: 'plugin/markdown/marked.js' },
+            // { src: 'plugin/markdown/markdown.js' },
+            // { src: 'plugin/notes/notes.js', async: true },
+            {src: 'js/plugin/zoom-js/zoom.js'},
+            {
+                src: 'js/plugin/highlight/highlight.js', async: true, callback: function () {
+                    hljs.initHighlightingOnLoad();
+                }
+            }
+        ]
+    });
+</script>
+</body>
 </html>
