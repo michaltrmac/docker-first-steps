@@ -25,8 +25,9 @@ def get_hit_count():
 @app.route('/')
 def hello():
     count = get_hit_count()
-    return 'Hello World! I have been seen {} times. <br />Hostname: {hostname} | Version: {version}'.format(
+    return 'I have been seen {} times. <br />Container Hostname: {chostname}<br />Hostname: {hostname} <br /> Version: {version}'.format(
             count,
+            chostname=os.environ.get('CONTAINER_HOST'),
             hostname=socket.gethostname(),
             version=open('./VERSION.md').read().rstrip('\n')
         )
