@@ -10,4 +10,4 @@ ENV PYTHONPATH=/usr/src/app
 
 WORKDIR /usr/src/app
 
-CMD ["python", "run.py"]
+CMD ["python", "app.py"]
