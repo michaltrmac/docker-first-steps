@@ -98,8 +98,7 @@
             <section data-state="slide4-1">
                 <style>.slide4-1 header:after { content: "Dockerfile"; }</style>
 
-                <pre>
-                    <code data-trim data-noescape>
+                <pre><code data-trim data-noescape>
                         FROM python:3.6.5-alpine3.7
 
                         # pridame zdrojovy kod aplikace
@@ -113,20 +112,69 @@
                         WORKDIR /usr/src/app
 
                         CMD ["python", "run.py"]
-                    </code>
-                </pre>
+                    </code></pre>
             </section>
 
             <section data-state="slide4-2">
                 <style>.slide4-2 header:after { content: "Dockerfile - Build & Run"; }</style>
 
-                <pre>
-                    <code data-trim data-noescape>
-                        docker build -t python-simple-app:1.0 .
-                    </code>
-                </pre>
+                <h4 class="al-left">Build</h4>
+                <pre><code data-trim data-noescape>
+                        docker build -t docker.local/python-simple-app:1.0 .
+                    </code></pre>
+                <br />
+
+                <h4 class="al-left">Run</h4>
+                <pre><code data-trim data-noescape>
+                        docker run --rm -it -p 80:80 python-simple-app/python-simple-app:1.0
+                    </code></pre>
+                <br />
+
+                <h4 class="al-left">Run (detached with volume)</h4>
+                <pre><code data-trim data-noescape>
+                        docker run --rm -d -p 80:80 -v $(pwd)/src:/usr/src/app python-simple-app/python-simple-app:1.0
+                    </code></pre>
+
             </section>
         </section>
+
+        <!-- slide 5 - Docker Compose -->
+        <section data-state="slide5">
+            <style>.slide5 header:after { content: "Docker Compose"; }</style>
+            <div class="al-left">
+                <ul>
+                    <li class="fragment">nástroj pro definování aplikace složené z více kontejnerů</li>
+                    <li class="fragment">konfigurační soubor ve formátu YAML</li>
+                    <li class="fragment">spustění kompletní multi-kontejnerové aplikace jedním příkazem</li>
+                    <li class="fragment">možnost různých nastavení pro dev, test a prod prostředí</li>
+                </ul>
+            </div>
+
+            <section data-state="slide5-1">
+
+            </section>
+        </section>
+
+        <!--<section data-state="slide5">-->
+            <!--<style>.slide5 header:after { content: "Užitečné příkazy"; }</style>-->
+            <!--<pre><code data-trim data-noescape>-->
+                <!--docker ps # vypise seznam bezicich kontejneru-->
+                <!--docker ps -a # vypise seznam vsech kontejneru-->
+                <!--docker start &lt;container_name&gt; # spusti zastaveny kontejner podle jmena-->
+                <!--docker stop &lt;container_name&gt; # zastavi spusteny kontejner podle jmena-->
+                <!--docker rm &lt;container_name&gt; # smaze zastaveny kontejner podle jmena-->
+                <!--docker images # vypise seznam imagu-->
+                <!--docker rmi &lt;image_id&gt; # smaze konkretni image-->
+            <!--</code></pre>-->
+            <!--<br /><br />-->
+            <!--<h4 class="al-left">GUI</h4>-->
+            <!--<div class="al-left">-->
+                <!--<ul>-->
+                    <!--<li><a href="https://kitematic.com/">Kitematic</a> - Win & OS X</li>-->
+                    <!--<li><a href="https://portainer.io/">Portainer.io</a> - web based</li>-->
+                <!--</ul>-->
+            <!--</div>-->
+        <!--</section>-->
 
         <!--
         <section>Single Horizontal Slide</section>
