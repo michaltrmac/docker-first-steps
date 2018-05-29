@@ -126,13 +126,13 @@
 
                 <h4 class="al-left">Run</h4>
                 <pre><code data-trim data-noescape>
-                        docker run --rm -it -p 80:80 python-simple-app/python-simple-app:1.0
+                        docker run --rm -it -p 80:80 docker.local/python-simple-app:1.0
                     </code></pre>
                 <br />
 
                 <h4 class="al-left">Run (detached with volume)</h4>
                 <pre><code data-trim data-noescape>
-                        docker run --rm -d -p 80:80 -v $(pwd)/src:/usr/src/app python-simple-app/python-simple-app:1.0
+                        docker run --rm -d -p 80:80 -v $(pwd)/src:/usr/src/app docker.local/python-simple-app:1.0
                     </code></pre>
 
             </section>
@@ -140,49 +140,196 @@
 
         <!-- slide 5 - Docker Compose -->
         <section data-state="slide5">
-            <style>.slide5 header:after { content: "Docker Compose"; }</style>
-            <div class="al-left">
-                <ul>
-                    <li class="fragment">nástroj pro definování aplikace složené z více kontejnerů</li>
-                    <li class="fragment">konfigurační soubor ve formátu YAML</li>
-                    <li class="fragment">spustění kompletní multi-kontejnerové aplikace jedním příkazem</li>
-                    <li class="fragment">možnost různých nastavení pro dev, test a prod prostředí</li>
-                </ul>
-            </div>
+            <section>
+                <style>.slide5 header:after { content: "Docker Compose"; }</style>
+                <div class="al-left">
+                    <ul>
+                        <li class="fragment">nástroj pro definování aplikace složené z více kontejnerů</li>
+                        <li class="fragment">konfigurační soubor ve formátu YAML</li>
+                        <li class="fragment">spustění kompletní multi-kontejnerové aplikace jedním příkazem</li>
+                        <li class="fragment">možnost různých nastavení pro dev, test a prod prostředí</li>
+                    </ul>
+                </div>
+            </section>
 
             <section data-state="slide5-1">
+                <style>.slide5-1 header:after { content: "docker-compose.yml"; }</style>
+                <pre style="max-height: 520px;"><code data-trim data-noescape style="max-height: 520px;">
+                      version: '3'
+                        services:
+                          nginx:
+                            build:
+                              context: .
+                              dockerfile: Dockerfile.nginx
+                            image: docker.local/nginx:1.13.12
+                            ports:
+                              - 8002:80
+                            depends_on:
+                              - web
+
+                          web:
+                            build:
+                              context: .
+                              dockerfile: Dockerfile.web_app
+                            image: docker.local/flask-redis:1.0
+                            depends_on:
+                              - redis
+
+                          redis:
+                            image: "redis:alpine"
+                    </code></pre>
+            </section>
+
+            <section data-state="slide5-2">
+                <style>.slide5-2 header:after { content: "Docker Compose příkazy"; }</style>
+
+                <h4 class="al-left">Spuštění aplikace</h4>
+                <pre><code data-trim data-noescape>
+                        docker-compose up
+                        docker-compose up --build       # znovu zbuilduje image
+                        docker-compose up --build -d    # znovu zbuilduje image a spustí vše na pozadí
+                    </code></pre>
+                <br />
+
+                <h4 class="al-left">Logy</h4>
+                <pre><code data-trim data-noescape>
+                        docker-compose logs
+                        docker-compose logs -f                    # zobrazi logy ve "follow" módu
+                        docker-compose logs -f &lt;service_name&gt;     # zobrazí logy konkrétní služby
+                    </code></pre>
+                <br />
+
+                <h4 class="al-left">Ukončení aplikace</h4>
+                <pre><code data-trim data-noescape>
+                        docker-compose down             # ukončí aplikaci a odstraní kontejnery
+                        docker-compose down --volumes   # navíc smaže i volumes spjaté s kontejnery v docker-compose.yml
+                    </code></pre>
+            </section>
+        </section>
+
+        <!-- Slide 6 - Docker Swarm -->
+        <section data-state="slide6">
+            <section>
+                <style>.slide6 header:after { content: "Docker Swarm"; }</style>
+
+                <p>
+                    <strong>Swarm</strong> je skupina serverů (virtuálů), na kterých běží Docker, spojených do clusteru.
+                </p>
+                <img src="img/docker-swarm.jpg" />
+            </section>
+
+            <section data-state="slide6-1">
+                <style>.slide6-1 header:after { content: "Docker Swarm"; }</style>
+
+                <div class="al-left">
+                    <ul>
+                        <li>scaling - možnost spustit aplikaci ve více instancích</li>
+                        <li>load balancing - rozložení zátěže mezi jednotlivé nody</li>
+                        <li>rolling update - postupná aktualizace aplikace na jednotlivých nodech</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section data-state="slide6-2">
+                <style>.slide6-2 header:after { content: "Docker Swarm - Node"; }</style>
+
+                <div class="al-left">
+                    <h4>Manager</h4>
+                    <ul>
+                        <li>správa jednotlivých nodů a služeb</li>
+                        <li>může být zároveň i <strong>Worker</strong></li>
+                    </ul>
+                    <br />
+                    <br />
+
+                    <h4>Worker</h4>
+                    <ul>
+                        <li>vykonávají jednotlivé služby zaslané managerem</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section data-state="slide6-3">
+                <style>.slide6-3 header:after { content: ""; }</style>
+
+                <pre class="stretch less"><code data-trim data-noescape>
+                      version: '3'
+                        services:
+                          nginx:
+                            build:
+                              context: .
+                              dockerfile: Dockerfile.nginx
+                            image: docker.local/nginx:1.13.12
+                            ports:
+                              - 8002:80
+                            depends_on:
+                              - web
+
+                          web:
+                            build:
+                              context: .
+                              dockerfile: Dockerfile.web_app
+                            image: docker.local/flask-redis:1.0
+                            deploy:
+                              replicas: 6
+                            environment:
+                              - CONTAINER_HOST='{{.Node.Hostname}}'
+                            depends_on:
+                              - redis
+
+                          redis:
+                            image: "redis:alpine"
+                    </code></pre>
+            </section>
+
+            <section data-state="slide6-4">
+                <style>.slide6-4 header:after { content: "Docker Swarm příkazy"; }</style>
+
+                <h4 class="al-left">Spuštění aplikace</h4>
+                <pre><code data-trim data-noescape>
+                        docker stack deploy -c &lt;docker-compose-file&gt; &lt;stack-name&gt;
+                    </code></pre>
+                <br />
+
+                <h4 class="al-left">Seznam spuštěných aplikací</h4>
+                <pre><code data-trim data-noescape>
+                        docker service ls
+                    </code></pre>
+                <br />
+
+                <h4 class="al-left">Škálování aplikace</h4>
+                <pre><code data-trim data-noescape>
+                        docker service scale &lt;service-name=num-of-replicas&gt;
+                    </code></pre>
+
+                <h4 class="al-left">Smazání stacku</h4>
+                <pre><code data-trim data-noescape>
+                        docker stack rm &lt;stack-name&gt;
+                    </code></pre>
 
             </section>
         </section>
 
-        <!--<section data-state="slide5">-->
-            <!--<style>.slide5 header:after { content: "Užitečné příkazy"; }</style>-->
-            <!--<pre><code data-trim data-noescape>-->
-                <!--docker ps # vypise seznam bezicich kontejneru-->
-                <!--docker ps -a # vypise seznam vsech kontejneru-->
-                <!--docker start &lt;container_name&gt; # spusti zastaveny kontejner podle jmena-->
-                <!--docker stop &lt;container_name&gt; # zastavi spusteny kontejner podle jmena-->
-                <!--docker rm &lt;container_name&gt; # smaze zastaveny kontejner podle jmena-->
-                <!--docker images # vypise seznam imagu-->
-                <!--docker rmi &lt;image_id&gt; # smaze konkretni image-->
-            <!--</code></pre>-->
-            <!--<br /><br />-->
-            <!--<h4 class="al-left">GUI</h4>-->
-            <!--<div class="al-left">-->
-                <!--<ul>-->
-                    <!--<li><a href="https://kitematic.com/">Kitematic</a> - Win & OS X</li>-->
-                    <!--<li><a href="https://portainer.io/">Portainer.io</a> - web based</li>-->
-                <!--</ul>-->
-            <!--</div>-->
-        <!--</section>-->
-
-        <!--
-        <section>Single Horizontal Slide</section>
-        <section>
-            <section>Vertical Slide 1</section>
-            <section>Vertical Slide 2</section>
+        <section data-state="slide7">
+            <style>.slide7 header:after { content: "Užitečné příkazy"; }</style>
+            <pre><code data-trim data-noescape>
+                docker ps # vypise seznam bezicich kontejneru
+                docker ps -a # vypise seznam vsech kontejneru
+                docker start &lt;container_name&gt; # spusti zastaveny kontejner podle jmena
+                docker stop &lt;container_name&gt; # zastavi spusteny kontejner podle jmena
+                docker rm &lt;container_name&gt; # smaze zastaveny kontejner podle jmena
+                docker images # vypise seznam imagu
+                docker rmi &lt;image_id&gt; # smaze konkretni image
+            </code></pre>
+            <br /><br />
+            <h4 class="al-left">GUI</h4>
+            <div class="al-left">
+                <ul>
+                    <li><a href="https://kitematic.com/">Kitematic</a> - Win & OS X</li>
+                    <li><a href="https://portainer.io/">Portainer.io</a> - web based</li>
+                </ul>
+            </div>
         </section>
-        -->
     </div>
 </div>
 
