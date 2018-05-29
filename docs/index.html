@@ -311,7 +311,30 @@
         </section>
 
         <section data-state="slide7">
-            <style>.slide7 header:after { content: "Užitečné příkazy"; }</style>
+            <style>.slide7 header:after { content: "Proč a kdy použít Docker"; }</style>
+
+            <div class="al-left">
+                <h4>Proč?</h4>
+                <ul>
+                    <li>Reprodukovatelnost</li>
+                    <li>Izolace aplikace</li>
+                    <li>Bezpečnost (pozor na kombinaci Docker + ufw)</li>
+                    <li>CI/CD</li>
+                    <li>Testování, code reviews, generování dokumentace</li>
+                </ul>
+                <br /><br />
+
+                <h4>Kdy?</h4>
+                <ul>
+                    <li>Zkoušení nových technologií</li>
+                    <li>Izolace aplikace - řešení závislostí</li>
+                    <li>Rychlé spuštění vývojového prostředí</li>
+                </ul>
+            </div>
+        </section>
+
+        <section data-state="slide8">
+            <style>.slide8 header:after { content: "Užitečné příkazy"; }</style>
             <pre><code data-trim data-noescape>
                 docker ps # vypise seznam bezicich kontejneru
                 docker ps -a # vypise seznam vsech kontejneru
@@ -327,6 +350,20 @@
                 <ul>
                     <li><a href="https://kitematic.com/">Kitematic</a> - Win & OS X</li>
                     <li><a href="https://portainer.io/">Portainer.io</a> - web based</li>
+                </ul>
+            </div>
+        </section>
+
+        <section data-state="slide9">
+            <style>.slide9 header:after { content: "Odkazy"; }</style>
+
+            <div class="al-left">
+                <ul>
+                    <li><a href="https://docker.com" target="_blank">Docker.com</a></li>
+                    <li><a href="https://hub.docker.com" target="_blank">hub.docker.com</a></li>
+                    <li><a href="https://docs.docker.com/compose/">Docker Compose</a></li>
+                    <li><a href="https://docs.docker.com/engine/swarm/">Docker Swarm</a></li>
+                    <li><a href="https://labs.play-with-docker.com/">Play With Docker</a></li>
                 </ul>
             </div>
         </section>
